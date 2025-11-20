@@ -5,13 +5,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.HelloController">
+<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.ClientController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
    <AnchorPane prefHeight="368.0" prefWidth="4256.0">
       <children>
-         <Button layoutX="17.0" layoutY="310.0" mnemonicParsing="false" text="Sign Up" />
+         <Button layoutX="17.0" layoutY="310.0" mnemonicParsing="false"  onAction="#onSignupButtonClick" text="Sign Up"  />
          <Label layoutX="185.0" layoutY="14.0" prefHeight="34.0" prefWidth="267.0" text="Grandview Movie Theatre">
             <font>
                <Font name="Bell MT Bold" size="23.0" />
@@ -23,11 +23,12 @@
          <Label layoutX="18.0" layoutY="228.0" prefHeight="18.0" prefWidth="114.0" text="Enter a date" />
          <Label layoutX="15.0" layoutY="166.0" text="Enter an email address" />
          <Label layoutX="14.0" layoutY="90.0" text="Enter your name" />
-         <Label layoutX="288.0" layoutY="58.0" prefHeight="31.0" prefWidth="88.0" text="Sign up">
+         <Label layoutX="288.0" layoutY="58.0" prefHeight="31.0" prefWidth="88.0"  text="Sign up">
             <font>
                <Font size="15.0" />
             </font>
          </Label>
+         <Button layoutX="519.0" layoutY="19.0" mnemonicParsing="false" text="Login" />
       </children>
    </AnchorPane>
 </VBox>
