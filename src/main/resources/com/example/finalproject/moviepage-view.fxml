@@ -7,7 +7,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.finalproject.MoviePageController">
    <children>
       <Label layoutX="219.0" layoutY="24.0" text="Grandview Movie Theater">
          <font>
@@ -22,6 +23,6 @@
       </HBox>
       <Button layoutX="123.0" layoutY="321.0" mnemonicParsing="false" text="Upcoming Movie" />
       <ListView layoutX="194.0" layoutY="110.0" prefHeight="200.0" prefWidth="200.0" />
-      <Button layoutX="359.0" layoutY="321.0" mnemonicParsing="false" text="Tickets" />
+      <Button layoutX="359.0" layoutY="321.0" mnemonicParsing="false" onAction="#onTicketsButtonClick" text="Tickets" />
    </children>
 </AnchorPane>
