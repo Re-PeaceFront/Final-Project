@@ -1,4 +1,4 @@
-package com.example.finalproject;
+package com.example.finalproject.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,7 +15,7 @@ public class ClientController {
     @FXML
     public void onSignupButtonClick(ActionEvent actionEvent) throws IOException {
         // Load the SignUp page
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("client-view.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/finalproject/client-view.fxml"));
         Parent root = loader.load();
         // Get current stage
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
