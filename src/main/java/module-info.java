@@ -2,6 +2,7 @@ module com.example.finalproject {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.graphics;
+    requires javafx.base;
 
 
     opens com.example.finalproject to javafx.fxml;
