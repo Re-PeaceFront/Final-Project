@@ -18,7 +18,7 @@
                   <Insets left="10.0" />
                </HBox.margin>
             </Button>
-            <Label text="Manage Showtime" textFill="WHITE">
+            <Label text="Grandview Manage Showtime" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
