@@ -18,7 +18,7 @@
                   <Insets left="10.0" />
                </HBox.margin>
             </Button>
-            <Label contentDisplay="CENTER" text="Theater Rooms" textAlignment="CENTER" textFill="WHITE">
+            <Label contentDisplay="CENTER" text="Grandview Theater Rooms" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
