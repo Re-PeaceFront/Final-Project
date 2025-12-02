@@ -1,4 +1,4 @@
-package com.example.finalproject;
+package com.example.finalproject.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
