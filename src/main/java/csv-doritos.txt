@@ -1,0 +1,107 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   CSV SURVIVAL GUIDE (READ ME FIRST!)
+   Project: Movie Theatre System
+   Author: Rene
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+HEY! If you are stuck on how to handle the files, look here. 
+This is the simplest way to get the text files working without complex code.
+
+-----------------------------------------------------------------------------
+1. WHAT IS A CSV ANYWAY?
+-----------------------------------------------------------------------------
+It's just a text file where data is separated by commas.
+Think of it like a simplified Excel sheet.
+
+Example inside 'movies.csv':
+101,The Matrix,2h 16m,Sci-Fi
+
+We need to do 3 things:
+1. READ the line as one big text String.
+2. SPLIT the String every time we see a comma.
+3. SAVE those pieces into our Java Objects.
+
+-----------------------------------------------------------------------------
+2. READING FILES (The "Scanner" Trick)
+-----------------------------------------------------------------------------
+I'm using the Scanner class because it's easier than BufferedReader.
+
+--> HERE IS THE PATTERN:
+
+try {
+    File file = new File("data/movies.csv"); // Make sure this path is right!
+    Scanner scanner = new Scanner(file);
+
+    while (scanner.hasNextLine()) {
+        String rawLine = scanner.nextLine(); // Reads the whole line
+        
+        // CRITICAL: This chops the line into pieces!
+        // "101,Matrix,Sci-Fi" becomes ["101", "Matrix", "Sci-Fi"]
+        String[] parts = rawLine.split(","); 
+
+        // Now I grab the pieces by index
+        int id = Integer.parseInt(parts[0]); // Must convert String to Int
+        String title = parts[1];
+        String genre = parts[2];
+
+        // Create the object and save it to my RAM list
+        allMovies.add(new Movie(id, title, genre));
+    }
+    scanner.close(); // Always close it!
+} catch (FileNotFoundException e) {
+    System.out.println("Oops! Could not find the file.");
+}
+
+-----------------------------------------------------------------------------
+3. WRITING FILES (Saving Data)
+-----------------------------------------------------------------------------
+We use 'FileWriter'. 
+
+*** SUPER IMPORTANT *** When you say 'new FileWriter(path, true)', the 'true' means APPEND.
+It adds new data to the bottom. 
+If you forget 'true', it DELETES everything in the file and starts fresh.
+
+--> HERE IS THE PATTERN:
+
+public void saveMovie(Movie m) {
+    try {
+        FileWriter writer = new FileWriter("data/movies.csv", true); // 'true' keeps old data
+        
+        // I use the .toCSV() helper I made in the Movie class
+        writer.write(m.toCSV() + "\n"); // Don't forget the "\n" or it won't make a new line!
+        
+        writer.close();
+    } catch (IOException e) {
+        System.out.println("Error saving data.");
+    }
+}
+
+-----------------------------------------------------------------------------
+4. BIG MISTAKES TO WATCH OUT FOR (Do Not Do These!)
+-----------------------------------------------------------------------------
+
+[X] MISTAKE: Spaces after commas
+    Bad:  101, Matrix, Sci-Fi
+    Good: 101,Matrix,Sci-Fi
+    Why? Java is dumb. It sees " Matrix" (with a space) instead of "Matrix".
+
+[X] MISTAKE: Commas inside titles
+    Bad:  102,Avengers, Endgame,Action
+    Why? The .split(",") method will freak out and split the title in half.
+    Fix: Just don't let users type commas in titles.
+
+[X] MISTAKE: Blank lines at the end of the file
+    Make sure your CSV doesn't have a bunch of empty lines at the bottom, 
+    or the Scanner might crash trying to read nothing.
+
+-----------------------------------------------------------------------------
+5. THE "toCSV" HELPER
+-----------------------------------------------------------------------------
+Put this inside every Model class (Movie, User, Room, etc.). 
+It makes saving super easy later.
+
+// Inside Movie.java
+public String toCSV() {
+    // I put commas between every field
+    return this.id + "," + this.title + "," + this.genre;
+}
