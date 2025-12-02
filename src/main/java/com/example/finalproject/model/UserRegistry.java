@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * A simple in-memory registry to store user data (email and password).
  * This class provides methods to register a new user and validate login credentials.
- * Authors Aya
+ * Author Aya
  */
 public class UserRegistry {
 
