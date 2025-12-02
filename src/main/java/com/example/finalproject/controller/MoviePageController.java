@@ -36,7 +36,7 @@ public class MoviePageController implements Initializable {
      * Called automatically after the FXML file has been loaded.
      * Initializes the movie list by fetching data from the MovieService.
      *
-     * @param url the location used to resolve relative paths for the root object
+     * @param url            the location used to resolve relative paths for the root object
      * @param resourceBundle the resources used to localize the root object
      */
     @Override
@@ -57,17 +57,4 @@ public class MoviePageController implements Initializable {
             }
         });
     }
-
-    /**
-     * Handles the ActionEvent for the "Upcoming Movie" button.
-     * Delegates scene transition to the SceneNavigator.
-     * * @param actionEvent the event triggered by the button click
-     */
-    public void onUpcomingButtonClick(ActionEvent actionEvent) {
-        // Delegate navigation to the SceneNavigator
-        SceneNavigator.navigate(actionEvent, UPCOMING_MOVIE_FXML, "Movie Details / Upcoming");
-    }
-
-    // NOTE: The private methods transitionToUpcomingMovieView and showAlert
-    // have been completely removed, as their functionality is now in SceneNavigator.
 }
