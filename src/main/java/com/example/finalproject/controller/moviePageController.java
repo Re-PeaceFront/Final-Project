@@ -2,14 +2,17 @@ package com.example.finalproject.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -59,25 +62,38 @@ public class moviePageController implements Initializable {
         movieListView.setOnMouseClicked((MouseEvent event) -> {
             if (event.getClickCount() == 2) {
                 String selectedItem = movieListView.getSelectionModel().getSelectedItem();
-                openNewWindow(selectedItem);
+
             }
         });
     }
 
-    /**
-     * Opens a new window displaying details about the selected movie.
-     *
-     * @param data the movie title selected from the ListView
-     */
-    private void openNewWindow(String data) {
-        Stage newStage = new Stage();
 
-        BorderPane pane = new BorderPane();
-        pane.setCenter(new javafx.scene.control.Label(data));
+    public void onUpcomingButtonClick(ActionEvent actionEvent) {
+        try {
+            // 1. Define the path to the FXML file you provided
 
-        Scene scene = new Scene(pane, 250, 150);
-        newStage.setTitle("Details Window");
-        newStage.setScene(scene);
-        newStage.show();
+            URL fxmlUrl = getClass().getResource("/com/example/finalproject/Upcoming Movie.fxml");
+
+            if (fxmlUrl == null) {
+                throw new IOException("FXML file not found: Upcoming Movie.fxml");
+            }
+
+            FXMLLoader fxmlLoader = new FXMLLoader(fxmlUrl);
+
+            // 2. Load the FXML root element
+            Scene upcomingScene = new Scene(fxmlLoader.load());
+
+            // 3. Get the current Stage (window) from the button that was clicked
+            Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+
+            // 4. Set the new scene on the current stage
+            currentStage.setScene(upcomingScene);
+            currentStage.setTitle("Upcoming Movie");
+            currentStage.show();
+
+        } catch (IOException e) {
+            System.err.println("Failed to load the FXML view for the upcoming  page.");
+            e.printStackTrace();
+        }
     }
 }

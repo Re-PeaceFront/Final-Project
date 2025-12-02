@@ -1,8 +1,16 @@
 package com.example.finalproject.controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.net.URL;
 
 /**
  * Controller for the SignUp page.
@@ -27,7 +35,7 @@ public class ClientController {
      * Triggered when the SignUp button is clicked.
      * Validates user input and displays confirmation.
      */
-    public void onSignupButtonClick() {
+    public void onSignupButtonClick( ActionEvent event) throws IOException {
 
         String name = nameField.getText();
         String password = passwordField.getText();
@@ -44,10 +52,40 @@ public class ClientController {
                 "Email: " + email + "\n" +
                 "Date: " + date;
 
-        showAlert("Success", message);
 
         clearFields();
+
+        try {
+        // 1. Specify the path to your movie view FXML
+        URL fxmlUrl = getClass().getResource("/com/example/finalproject/moviepage-view.fxml");
+
+        if (fxmlUrl == null) {
+            throw new IOException("FXML file not found: moviepage-view.fxml. Check your path.");
+        }
+
+        FXMLLoader fxmlLoader = new FXMLLoader(fxmlUrl);
+
+        // 2. Load the movie page scene
+        Scene movieScene = new Scene(fxmlLoader.load());
+
+        // 3. Get the current stage (the window) from the button that was clicked
+        Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+        // 4. Set the new scene and show it
+        currentStage.setScene(movieScene);
+        currentStage.setTitle("Grandview Movie Theater");
+        currentStage.show();
+
+        // We skip the success alert and field clearing here
+        // because the view is changing immediately upon successful validation.
+
+    } catch (IOException e) {
+        showAlert("Error", "Could not load the Movie Page view.");
+        System.err.println("Failed to load moviepage-view.fxml.");
+        e.printStackTrace();
     }
+
+}
 
     /**
      * Displays an alert dialog.
