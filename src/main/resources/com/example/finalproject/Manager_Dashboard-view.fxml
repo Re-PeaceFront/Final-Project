@@ -15,7 +15,7 @@
    <top>
       <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="600.0" style="-fx-background-color: #2c3e50;" BorderPane.alignment="CENTER">
          <children>
-            <Label prefHeight="30.0" prefWidth="630.0" text="                                                     Grandview Theater Manager | Dashboard" textFill="WHITE">
+            <Label prefHeight="30.0" prefWidth="704.0" text="                                                     Grandview Theater Manager | Dashboard" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="20.0" />
                </font>
