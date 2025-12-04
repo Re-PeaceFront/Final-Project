@@ -124,6 +124,7 @@ public class ClientController {
             // 4. Set the new scene and update the title
             currentStage.setScene(loginScene);
             currentStage.setTitle("Login");
+
             currentStage.show();
 
         } catch (IOException e) {
