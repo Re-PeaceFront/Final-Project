@@ -28,7 +28,7 @@
             </Label>
             <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
                <children>
-                  <Button mnemonicParsing="false" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="👤 Sign Out">
+                  <Button mnemonicParsing="false" onAction="#onSignOutClick" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="👤 Sign Out">
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin>
@@ -56,9 +56,9 @@
    <bottom>
       <HBox alignment="CENTER_RIGHT" prefHeight="60.0" prefWidth="200.0" spacing="15.0" style="-fx-background-color: #ecf0f1;" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" style="-fx-background-color: #e74c3c;" text="Delete Room" textFill="WHITE" />
-            <Button mnemonicParsing="false" text="Edit Capacity" />
-            <Button mnemonicParsing="false" style="-fx-background-color: #2ecc71;" text="+ Add New Room" textFill="WHITE">
+            <Button mnemonicParsing="false" onAction="#onDeleteClick" style="-fx-background-color: #e74c3c;" text="Delete Room" textFill="WHITE" />
+            <Button mnemonicParsing="false" onAction="#onEditClick" text="Edit Capacity" />
+            <Button mnemonicParsing="false" onAction="#onAddClick" style="-fx-background-color: #2ecc71;" text="+ Add New Room" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>

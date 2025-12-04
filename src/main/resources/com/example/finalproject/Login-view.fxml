@@ -15,7 +15,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.controller.LoginController">
    <top>
       <!-- Top Header Section -->
       <GridPane prefHeight="80.0" BorderPane.alignment="CENTER">
@@ -86,12 +86,12 @@
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <TextField style="-fx-background-color: transparent; -fx-border-color: #003366; -fx-text-fill: #003366;" GridPane.columnIndex="1">
+                        <TextField fx:id="usernameField" style="-fx-background-color: transparent; -fx-border-color: #003366; -fx-text-fill: #003366;" GridPane.columnIndex="1">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </TextField>
-                        <PasswordField prefHeight="32.0" prefWidth="298.0" style="-fx-background-color: transparent; -fx-border-color: #003366; -fx-text-fill: #003366;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <PasswordField fx:id="passwordField" prefHeight="32.0" prefWidth="298.0" style="-fx-background-color: transparent; -fx-border-color: #003366; -fx-text-fill: #003366;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <font>
                               <Font size="14.0" />
                            </font>
@@ -106,7 +106,7 @@
                   <VBox alignment="CENTER" spacing="20.0">
                      <children>
                         <!-- Primary Action: Solid Blue -->
-                        <Button mnemonicParsing="false" prefWidth="120.0" style="-fx-background-color: #003366; -fx-text-fill: white;" text="Login">
+                        <Button mnemonicParsing="false" onAction="#onLoginClick" prefWidth="120.0" style="-fx-background-color: #003366; -fx-text-fill: white;" text="Login">
                            <font>
                               <Font name="System Bold" size="18.0" />
                            </font>
@@ -115,7 +115,7 @@
                            </padding>
                         </Button>
                         <!-- Secondary Action: Outline Blue -->
-                        <Button mnemonicParsing="false" prefWidth="180.0" style="-fx-background-color: transparent; -fx-border-color: #003366; -fx-text-fill: #003366;" text="New Client?">
+                        <Button mnemonicParsing="false" onAction="#onNewClientClick" prefWidth="180.0" style="-fx-background-color: transparent; -fx-border-color: #003366; -fx-text-fill: #003366;" text="New Client?">
                            <font>
                               <Font size="16.0" />
                            </font>
