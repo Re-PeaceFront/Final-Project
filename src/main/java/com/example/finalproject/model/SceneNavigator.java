@@ -13,6 +13,7 @@ import java.net.URL;
 /**
  * Utility class to handle navigation between different FXML views.
  * This class abstracts the JavaFX boilerplate for loading scenes.
+ * Author Aya
  */
 public class SceneNavigator {
 

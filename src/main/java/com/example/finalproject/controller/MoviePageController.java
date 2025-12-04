@@ -14,11 +14,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
- * Controller class for the Movie Page view (moviepage-view.fxml).
- *
- * This controller's primary responsibility is to populate the ListView
- * and handle user input (button clicks, list double-clicks) by delegating
- * tasks like data fetching and navigation to separate classes.
  *
  * Author: Aya
  */

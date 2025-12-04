@@ -34,7 +34,7 @@ public class ClientController {
 
     /**
      * Triggered when the SignUp button is clicked.
-     * Validates user input and displays confirmation.
+     * Validates user input .
      */
     public void onSignupButtonClick( ActionEvent event) throws IOException {
 
@@ -47,11 +47,6 @@ public class ClientController {
             showAlert("Error", "All fields must be filled!");
             return;
         }
-
-        String message = "Signup Successful!\n\n" +
-                "Name: " + name + "\n" +
-                "Email: " + email + "\n" +
-                "Date: " + date;
 
 
         clearFields();
@@ -134,7 +129,7 @@ public class ClientController {
         } catch (IOException e) {
             System.err.println("Failed to load the Login View FXML.");
             e.printStackTrace();
-            // Optionally, show an error alert to the user here
+            //  show an error alert to the user here
         }
     }
 }
