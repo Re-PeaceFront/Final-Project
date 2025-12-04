@@ -31,7 +31,7 @@ public class MoviePageController implements Initializable {
      * Called automatically after the FXML file has been loaded.
      * Initializes the movie list by fetching data from the MovieService.
      *
-     * @param url            the location used to resolve relative paths for the root object
+     * @param url the location used to resolve relative paths for the root object
      * @param resourceBundle the resources used to localize the root object
      */
     @Override

@@ -19,8 +19,8 @@ public class SceneNavigator {
 
     /**
      * Loads a new FXML view and sets it as the scene for the current window.
-     * * @param event The event (ActionEvent or MouseEvent) that triggered the transition.
-     * @param fxmlPath The resource path to the new FXML file (e.g., "/com/example/app/view.fxml").
+     * @param event The event (ActionEvent or MouseEvent) that triggered the transition.
+     * @param fxmlPath The resource path to the new FXML file .
      * @param title The new title for the window.
      */
     public static void navigate(Event event, String fxmlPath, String title) {

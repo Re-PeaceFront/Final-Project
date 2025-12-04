@@ -11,7 +11,6 @@ public class MovieService {
 
     /**
      * Provides a list of currently available movie titles.
-     * In a real application, this would fetch data from a database.
      * @return ObservableList of movie titles.
      */
     public ObservableList<String> getAvailableMovies() {
