@@ -206,8 +206,8 @@ public class MoviePage {
     /**
      * Increases the tickets sold count by the given positive amount.
      *
-     * @param amount number of tickets to add, must be > 0
-     * @throws IllegalArgumentException if amount is <= 0
+     * @param amount number of tickets to add, must be greater than 0
+     * @throws IllegalArgumentException if amount is less than or equal to 0
      */
     public void addTickets(int amount) {
         if (amount <= 0) {
