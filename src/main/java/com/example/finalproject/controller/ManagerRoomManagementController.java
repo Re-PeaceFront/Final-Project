@@ -8,15 +8,22 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
@@ -29,101 +36,181 @@ import java.util.Scanner;
  */
 public class ManagerRoomManagementController implements Initializable {
 
-    /**
-     * TableView for displaying Room objects.
-     */
+    // CONSTANT: Path to the CSV file
+    private static final String CSV_PATH = "src/main/resources/com/example/finalproject/data/rooms.csv";
+
     @FXML private TableView<Room> roomTable;
-
-    /**
-     * Column for the Room ID.
-     */
     @FXML private TableColumn<Room, Integer> colRoomId;
-
-    /**
-     * Column for the Room Name.
-     */
     @FXML private TableColumn<Room, String> colRoomName;
-
-    /**
-     * Column for the Room Capacity.
-     */
     @FXML private TableColumn<Room, Integer> colCapacity;
 
-    /**
-     * In-memory list to hold the Room objects loaded from the file.
-     */
     private ObservableList<Room> roomList = FXCollections.observableArrayList();
 
-    /**
-     * Initializes the controller class.
-     * This method is automatically called after the fxml file has been loaded.
-     *
-     * @param url The location used to resolve relative paths for the root object.
-     * @param resourceBundle The resources used to localize the root object.
-     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Link the TableColumns to the properties in the Room class
-        // "roomID" matches getRoomID(), "roomName" matches getRoomName(), etc.
+        // SETUP: Bind table columns to Room properties
         colRoomId.setCellValueFactory(new PropertyValueFactory<>("roomID"));
         colRoomName.setCellValueFactory(new PropertyValueFactory<>("roomName"));
         colCapacity.setCellValueFactory(new PropertyValueFactory<>("capacity"));
 
-        // Retrieve data from the CSV file
-        loadRoomsFromCSV();
+        // LOAD: Fetch data from CSV
+        loadRooms();
 
-        // Bind the data list to the table
+        // DISPLAY: Set items to table
         roomTable.setItems(roomList);
     }
 
     /**
-     * Reads room data from the "rooms.csv" file.
-     * Parses each line into a Room object and adds it to the list.
+     * Standard CSV Loading logic (Scanner -> Split -> Object -> List)
+     * Reads the "rooms.csv" file line by line, parses the comma-separated values,
+     * creates Room objects, and adds them to the observable list.
      */
-    private void loadRoomsFromCSV() {
+    private void loadRooms() {
+        roomList.clear();
         try {
-            // Locate the CSV file in the resources folder
-            File file = new File("src/main/resources/com/example/finalproject/data/rooms.csv");
+            File file = new File(CSV_PATH);
             Scanner scanner = new Scanner(file);
 
-            // Loop through each line of the file
             while (scanner.hasNextLine()) {
                 String rawLine = scanner.nextLine();
-                
-                // Safety check: ignore empty lines to prevent errors
                 if (rawLine.trim().isEmpty()) continue;
 
-                // Split the line by commas into parts
                 String[] parts = rawLine.split(",");
+                
+                // VALIDATION: Ensure we have enough parts
+                if (parts.length >= 3) {
+                    int id = Integer.parseInt(parts[0].trim());
+                    String name = parts[1].trim();
+                    int capacity = Integer.parseInt(parts[2].trim());
 
-                // Parse the parts into the correct data types
-                // CSV Format: ID (int), Name (String), Capacity (int)
-                int id = Integer.parseInt(parts[0]);
-                String name = parts[1];
-                int capacity = Integer.parseInt(parts[2]);
-
-                // Create a new Room object and add it to our collection
-                roomList.add(new Room(id, name, capacity));
+                    roomList.add(new Room(id, name, capacity));
+                }
             }
-            scanner.close(); // Close the file scanner
-        } catch (FileNotFoundException e) {
-            System.out.println("ERROR: Could not find rooms.csv");
+            scanner.close();
         } catch (Exception e) {
-            System.out.println("ERROR: An error occurred while loading rooms.");
+            System.out.println("ERROR: An error occurred while loading room data.");
             e.printStackTrace();
         }
     }
 
+    @FXML
+    public void onDashboardClick(ActionEvent event) throws IOException {
+        switchScene(event, "/com/example/finalproject/Manager_Dashboard-view.fxml", "Manager Dashboard");
+    }
+
+    @FXML
+    public void onSignOutClick(ActionEvent event) throws IOException {
+        switchScene(event, "/com/example/finalproject/Login-view.fxml", "Login");
+    }
+
     /**
-     * Returns the user to the main Dashboard view.
-     *
-     * @param event The button click event.
-     * @throws Exception If the FXML file cannot be loaded.
+     * Handles the delete room action.
      */
     @FXML
-    public void onDashboardClick(ActionEvent event) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/finalproject/Manager_Dashboard-view.fxml"));
+    public void onDeleteClick(ActionEvent event) {
+        Room selectedRoom = roomTable.getSelectionModel().getSelectedItem();
+        if (selectedRoom == null) {
+            showAlert("No Selection", "Please select a room to delete.");
+            return;
+        }
+        
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Delete " + selectedRoom.getRoomName() + "?", ButtonType.YES, ButtonType.NO);
+        confirm.showAndWait();
+
+        if (confirm.getResult() == ButtonType.YES) {
+            deleteRoomFromFile(selectedRoom.getRoomID());
+            loadRooms(); // Refresh the table to show it's gone
+        }
+    }
+
+    /**
+     * Handles the edit room capacity action.
+     */
+    @FXML
+    public void onEditClick(ActionEvent event) {
+        Room selectedRoom = roomTable.getSelectionModel().getSelectedItem();
+        if (selectedRoom == null) {
+            showAlert("No Selection", "Please select a room to edit.");
+            return;
+        }
+        
+        openForm(selectedRoom, event);
+    }
+
+    /**
+     * Handles the add new room action.
+     */
+    @FXML
+    public void onAddClick(ActionEvent event) throws IOException {
+        openForm(null, event);
+    }
+
+    /**
+     * Utility method to load a new FXML view and update the current stage.
+     */
+    private void switchScene(ActionEvent event, String fxmlPath, String title) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath));
+        Scene scene = new Scene(fxmlLoader.load());
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(fxmlLoader.load()));
+        stage.setTitle("Grandview Theater - " + title);
+        stage.setScene(scene);
+        stage.show();
+    }
+    
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+    
+    /**
+     * LOGIC: Simple Deletion from CSV.
+     */
+    private void deleteRoomFromFile(int idToDelete) {
+        List<String> lines = new ArrayList<>();
+        try {
+            Scanner scanner = new Scanner(new File(CSV_PATH));
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (line.trim().isEmpty()) continue;
+                
+                int currentId = Integer.parseInt(line.split(",")[0]);
+                if (currentId != idToDelete) {
+                    lines.add(line);
+                }
+            }
+            scanner.close();
+
+            FileWriter writer = new FileWriter(CSV_PATH, false);
+            for (String l : lines) writer.write(l + "\n");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * HELPER: Handles opening the Room Form Popup Window.
+     */
+    private void openForm(Room roomToEdit, ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/finalproject/Manager_RoomForm-view.fxml"));
+            Parent root = loader.load();
+
+            ManagerRoomFormController controller = loader.getController();
+            if (roomToEdit != null) controller.setRoomData(roomToEdit);
+
+            Stage stage = new Stage();
+            stage.setTitle(roomToEdit == null ? "Add Room" : "Edit Room");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(((Node) event.getSource()).getScene().getWindow());
+            stage.showAndWait();
+
+            loadRooms();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
