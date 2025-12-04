@@ -8,15 +8,22 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
@@ -29,109 +36,190 @@ import java.util.Scanner;
  */
 public class ManagerShowtimeScheduleController implements Initializable {
 
-    /**
-     * TableView for displaying Showtime objects.
-     */
+    // CONSTANT: Path to the CSV file
+    private static final String CSV_PATH = "src/main/resources/com/example/finalproject/data/showtimes.csv";
+
     @FXML private TableView<Showtime> showtimeTable;
-
-    /**
-     * Column for the Date.
-     */
     @FXML private TableColumn<Showtime, String> colDate;
-
-    /**
-     * Column for the Time.
-     */
     @FXML private TableColumn<Showtime, String> colTime;
-
-    /**
-     * Column for the Movie ID (Foreign Key).
-     */
     @FXML private TableColumn<Showtime, Integer> colMovieId;
-
-    /**
-     * Column for the Room ID (Foreign Key).
-     */
     @FXML private TableColumn<Showtime, Integer> colRoomId;
 
-    /**
-     * In-memory list to store Showtime objects.
-     */
     private ObservableList<Showtime> showtimeList = FXCollections.observableArrayList();
 
-    /**
-     * Initializes the controller logic.
-     * Sets up table columns and loads data from the CSV file.
-     *
-     * @param url The location used to resolve relative paths for the root object.
-     * @param resourceBundle The resources used to localize the root object.
-     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Configure the TableColumns to look for specific getters in the Showtime class
-        // Example: "date" looks for getDate()
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         colTime.setCellValueFactory(new PropertyValueFactory<>("time"));
         colMovieId.setCellValueFactory(new PropertyValueFactory<>("movieID"));
         colRoomId.setCellValueFactory(new PropertyValueFactory<>("roomID"));
 
-        // Execute data loading
-        loadShowtimesFromCSV();
+        loadShowtimes();
 
-        // Update the UI table with the list data
+        // Link the ObservableList to the table
         showtimeTable.setItems(showtimeList);
     }
 
     /**
-     * Reads showtime data from "showtimes.csv".
-     * Creates Showtime objects and populates the observable list.
+     * Standard CSV loading logic
      */
-    private void loadShowtimesFromCSV() {
+    private void loadShowtimes() {
+        showtimeList.clear();
         try {
-            // Define path to the CSV file
-            File file = new File("src/main/resources/com/example/finalproject/data/showtimes.csv");
+            File file = new File(CSV_PATH);
             Scanner scanner = new Scanner(file);
 
-            // Iterate through file lines
             while (scanner.hasNextLine()) {
                 String rawLine = scanner.nextLine();
-                
-                // Skip empty lines to ensure robustness
                 if (rawLine.trim().isEmpty()) continue;
 
-                // Split the line by comma
                 String[] parts = rawLine.split(",");
 
-                // Parse the data according to CSV structure:
-                // ID (int), Date (String), Time (String), MovieID (int), RoomID (int)
-                int id = Integer.parseInt(parts[0]);
-                String date = parts[1];
-                String time = parts[2];
-                int movieId = Integer.parseInt(parts[3]);
-                int roomId = Integer.parseInt(parts[4]);
+                // Validation
+                if (parts.length >= 5) {
+                    int showtimeID = Integer.parseInt(parts[0].trim());
+                    String date = parts[1].trim();
+                    String time = parts[2].trim();
+                    int movieID = Integer.parseInt(parts[3].trim());
+                    int roomID = Integer.parseInt(parts[4].trim());
 
-                // Instantiate Showtime object and add to list
-                showtimeList.add(new Showtime(id, date, time, movieId, roomId));
+                    showtimeList.add(new Showtime(showtimeID, date, time, movieID, roomID));
+                }
             }
-            scanner.close(); // Prevent resource leaks
-        } catch (FileNotFoundException e) {
-            System.out.println("ERROR: Could not find showtimes.csv");
+            scanner.close();
         } catch (Exception e) {
-            System.out.println("ERROR: An error occurred while loading showtimes.");
+            System.out.println("ERROR: Failed to load showtime data.");
             e.printStackTrace();
         }
     }
 
+    @FXML
+    public void onDashboardClick(ActionEvent event) throws IOException {
+        switchScene(event, "/com/example/finalproject/Manager_Dashboard-view.fxml", "Manager Dashboard");
+    }
+
+    @FXML
+    public void onSignOutClick(ActionEvent event) throws IOException {
+        switchScene(event, "/com/example/finalproject/Login-view.fxml", "Login");
+    }
+
     /**
-     * Navigates back to the Manager Dashboard.
-     *
-     * @param event The button click event.
-     * @throws Exception If the FXML file is not found or cannot be loaded.
+     * Handles the delete/cancel showtime action.
      */
     @FXML
-    public void onDashboardClick(ActionEvent event) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/finalproject/Manager_Dashboard-view.fxml"));
+    public void onDeleteClick(ActionEvent event) {
+        Showtime selectedShowtime = showtimeTable.getSelectionModel().getSelectedItem();
+        if (selectedShowtime == null) {
+            showAlert("No Selection", "Select a showtime to delete.");
+            return;
+        }
+        
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Delete selected showtime?", ButtonType.YES, ButtonType.NO);
+        confirm.showAndWait();
+
+        if (confirm.getResult() == ButtonType.YES) {
+            deleteShowtimeFromFile(selectedShowtime);
+            loadShowtimes(); // Refresh the table
+        }
+    }
+
+    /**
+     * Handles the edit/reschedule showtime action.
+     */
+    @FXML
+    public void onEditClick(ActionEvent event) {
+        Showtime selectedShowtime = showtimeTable.getSelectionModel().getSelectedItem();
+        if (selectedShowtime == null) {
+            showAlert("No Selection", "Select a showtime to edit.");
+            return;
+        }
+        
+        openForm(selectedShowtime, event);
+    }
+
+    /**
+     * Handles the add new showtime action.
+     */
+    @FXML
+    public void onAddClick(ActionEvent event) throws IOException {
+        openForm(null, event);
+    }
+
+    /**
+     * Utility method to load a new FXML view and update the current stage.
+     */
+    private void switchScene(ActionEvent event, String fxmlPath, String title) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath));
+        Scene scene = new Scene(fxmlLoader.load());
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(fxmlLoader.load()));
+        stage.setTitle("Grandview Theater - " + title);
+        stage.setScene(scene);
+        stage.show();
+    }
+    
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+    
+    /**
+     * LOGIC: Simple Deletion from CSV using showtime ID.
+     */
+    private void deleteShowtimeFromFile(Showtime showtimeToDelete) {
+        List<String> lines = new ArrayList<>();
+        try {
+            Scanner scanner = new Scanner(new File(CSV_PATH));
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (line.trim().isEmpty()) continue;
+                
+                String[] parts = line.split(",");
+                if (parts.length >= 5) {
+                    // CSV format: showtimeID,date,time,movieID,roomID
+                    int csvShowtimeID = Integer.parseInt(parts[0].trim());
+                    
+                    // Only keep lines that don't match the showtime ID to delete
+                    if (csvShowtimeID != showtimeToDelete.getShowtimeID()) {
+                        lines.add(line);
+                    }
+                } else {
+                    lines.add(line); // Keep malformed lines
+                }
+            }
+            scanner.close();
+
+            FileWriter writer = new FileWriter(CSV_PATH, false);
+            for (String l : lines) writer.write(l + "\n");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * HELPER: Handles opening the Showtime Form Popup Window.
+     */
+    private void openForm(Showtime showtimeToEdit, ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/finalproject/Manager_ShowtimeForm-view.fxml"));
+            Parent root = loader.load();
+
+            ManagerShowtimeFormController controller = loader.getController();
+            if (showtimeToEdit != null) controller.setShowtimeData(showtimeToEdit);
+
+            Stage stage = new Stage();
+            stage.setTitle(showtimeToEdit == null ? "Schedule New Showtime" : "Reschedule Showtime");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(((Node) event.getSource()).getScene().getWindow());
+            stage.showAndWait();
+
+            loadShowtimes();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
