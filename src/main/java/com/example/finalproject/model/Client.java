@@ -50,6 +50,7 @@ public class Client extends User {
     public String toCSV() {
         // I format the client data as CSV: userID,password,name,email
         // This makes it easy to save client data to a CSV file
-        return getUserID() + "," + getUserPassword() + "," + name + "," + email;
+        // I include newline to ensure each entry is written on a new line
+        return getUserID() + "," + getUserPassword() + "," + name + "," + email + "\n";
     }
 }
