@@ -11,9 +11,10 @@ public class Launcher extends Application {
     
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("/com/example/finalproject/client-view.fxml"));
+        // Start with the Manager Login page for easier debugging of manager functionality
+        FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("/com/example/finalproject/Login-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Final Project");
+        stage.setTitle("Grandview Theater - Login");
         stage.setScene(scene);
         stage.show();
     }
