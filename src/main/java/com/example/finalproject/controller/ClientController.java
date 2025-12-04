@@ -88,6 +88,40 @@ public class ClientController {
 }
 
     /**
+     * Triggered when the Login button is clicked.
+     * Navigates back to the login page.
+     */
+    @FXML
+    public void onLoginButtonClick(ActionEvent event) {
+        try {
+            // Load the login view FXML
+            URL fxmlUrl = getClass().getResource("/com/example/finalproject/Login-view.fxml");
+            
+            if (fxmlUrl == null) {
+                throw new IOException("FXML file not found: Login-view.fxml. Check your path.");
+            }
+
+            FXMLLoader fxmlLoader = new FXMLLoader(fxmlUrl);
+            
+            // Load the login page scene
+            Scene loginScene = new Scene(fxmlLoader.load());
+            
+            // Get the current stage from the button that was clicked
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            
+            // Set the login scene and show it
+            currentStage.setScene(loginScene);
+            currentStage.setTitle("Login - Grandview Movie Theater");
+            currentStage.show();
+            
+        } catch (IOException e) {
+            showAlert("Error", "Could not load the Login Page view.");
+            System.err.println("Failed to load Login-view.fxml.");
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Displays an alert dialog.
      */
     private void showAlert(String title, String content) {
