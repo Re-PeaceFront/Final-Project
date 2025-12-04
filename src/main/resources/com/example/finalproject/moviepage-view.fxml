@@ -17,7 +17,6 @@
             <Button mnemonicParsing="false" text="Trailers" />
          </children>
       </HBox>
-      <Button layoutX="246.0" onAction="#onUpcomingButtonClick" layoutY="325.0" mnemonicParsing="false" text="Upcoming Movie" />
       <ListView fx:id="movieListView" layoutX="194.0" layoutY="110.0" prefHeight="200.0" prefWidth="200.0" />
    </children>
 </AnchorPane>

@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLXML;
 
 /**
  * Controller for the SignUp page.
@@ -33,7 +34,7 @@ public class ClientController {
 
     /**
      * Triggered when the SignUp button is clicked.
-     * Validates user input and displays confirmation.
+     * Validates user input .
      */
     public void onSignupButtonClick( ActionEvent event) throws IOException {
 
@@ -46,11 +47,6 @@ public class ClientController {
             showAlert("Error", "All fields must be filled!");
             return;
         }
-
-        String message = "Signup Successful!\n\n" +
-                "Name: " + name + "\n" +
-                "Email: " + email + "\n" +
-                "Date: " + date;
 
 
         clearFields();
@@ -140,5 +136,35 @@ public class ClientController {
         passwordField.clear();
         emailField.clear();
         dateField.clear();
+    }
+
+    public void onLoginButtonClick(ActionEvent event) {
+        try {
+            // 1. Define the path to the login FXML file
+            // Adjust the path if your FXML files are located elsewhere
+            URL fxmlUrl = getClass().getResource("/com/example/finalproject/Manager_Login-view.fxml");
+
+            if (fxmlUrl == null) {
+                throw new IOException("FXML file not found: Manager_Login-view.fxml. Check the path.");
+            }
+
+            // 2. Load the FXML file
+            FXMLLoader fxmlLoader = new FXMLLoader(fxmlUrl);
+            Scene loginScene = new Scene(fxmlLoader.load());
+
+            // 3. Get the current Stage (window) from the button that was clicked
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+            // 4. Set the new scene and update the title
+            currentStage.setScene(loginScene);
+            currentStage.setTitle("Login");
+
+            currentStage.show();
+
+        } catch (IOException e) {
+            System.err.println("Failed to load the Login View FXML.");
+            e.printStackTrace();
+            //  show an error alert to the user here
+        }
     }
 }
